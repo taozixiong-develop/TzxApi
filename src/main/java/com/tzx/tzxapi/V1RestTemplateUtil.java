@@ -37,6 +37,8 @@ public class V1RestTemplateUtil {
     //user account
     private static String getTokenUrl = "/user/token";
 
+    private static String tokenValid = "/user/tokenValid";
+
     private static String loginOutUrl = "/user/loginOut";
 
     private static String accountPaging = "/user/accountPaging";
@@ -234,6 +236,23 @@ public class V1RestTemplateUtil {
         }
     }
 
+    /**
+     * getToken
+     */
+    public static void tokenValid(String token) {
+        String url = globalUrl + tokenValid;
+        Long timestamp = System.currentTimeMillis() / 1000;
+        String timeStr = String.valueOf(timestamp);
+        Map<String, String> body = new HashMap<>();
+        Map<String, String> headers = new HashMap<>();
+        headers.put("timestamp", timeStr);
+        headers.put("share-api-token", token);
+        ResponseEntity response = request(null, url, HttpMethod.POST, headers, body);
+        if (response.getStatusCodeValue() == 200) {
+            System.out.println(response.getBody());
+        }
+    }
+
 
     /**
      * loginOut
@@ -271,11 +290,15 @@ public class V1RestTemplateUtil {
      * @param size
      */
     public static void accountPaging(String token,
+                                     String idNumber,
                                      String accountId,
                                      String current,
                                      String size) {
 
         Map<String, String> body = new HashMap<>();
+        if (StringUtils.isNotEmpty(idNumber)) {
+            body.put("idNumber", idNumber);
+        }
         if (StringUtils.isNotEmpty(accountId)) {
             body.put("accountId", accountId);
         }
@@ -694,9 +717,8 @@ public class V1RestTemplateUtil {
 
 
     public static void main(String[] args) {
-//         getToken();
+//        getToken();
         //  loginOut("");
-
     }
 
 }
